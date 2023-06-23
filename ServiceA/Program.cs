@@ -31,8 +31,11 @@ app.MapGet("/chain", async (IHttpClientFactory httpClientFactory) =>
     {
         var servicebClient = httpClientFactory.CreateClient("ServiceB");
         var resp = await servicebClient.GetAsync("/chain");
-        var respContent = await resp.Content.ReadAsStringAsync();
-        return respContent;
+
+        if (!resp.IsSuccessStatusCode)
+            return Results.StatusCode((int)resp.StatusCode);
+
+        return Results.Ok(await resp.Content.ReadAsStringAsync());
     });
 
 app.Run();

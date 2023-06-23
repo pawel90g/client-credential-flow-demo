@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Shared;
 using Shared.IoC;
 
@@ -31,8 +32,11 @@ app.MapGet("/chain", async (IHttpClientFactory httpClientFactory) =>
     {
         var servicebClient = httpClientFactory.CreateClient("ServiceC");
         var resp = await servicebClient.GetAsync("/secret");
-        var respContent = await resp.Content.ReadAsStringAsync();
-        return respContent;
+
+        if(!resp.IsSuccessStatusCode)
+            return Results.StatusCode((int)resp.StatusCode);
+            
+        return Results.Ok(await resp.Content.ReadAsStringAsync());
     })
     .RequireAuthorization(ServiceB_AuthZ_Policy);
 
