@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 const string ServiceC_AuthZ_Policy = "service-c-authz";
 
+builder.Services.AddTelemetry("ServiceC");
+
 builder.Services.AddB2CAuthenticationWithJwt(builder.Configuration);
 builder.Services.AddAuthorization();
 

@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 const string ServiceA_AuthZ_Policy = "service-a-authz";
 
+builder.Services.AddTelemetry("ServiceA");
+
 builder.Services.AddB2CAuthenticationWithJwt(builder.Configuration);
 builder.Services.AddAuthorization();
 

@@ -6,6 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Shared.Configuration;
 using Shared.Http;
 using Shared.Services.Azure;
@@ -14,6 +16,19 @@ namespace Shared.IoC;
 
 public static class ServiceCollectionExtensions
 {
+    public static void AddTelemetry(
+        this IServiceCollection services,
+        string serviceName)
+    {
+        services.AddOpenTelemetry()
+            .WithTracing(tracerProviderBuilder =>
+                tracerProviderBuilder
+                    .AddSource(serviceName)
+                    .ConfigureResource(resource => resource.AddService(serviceName))
+                    .AddAspNetCoreInstrumentation()
+                    .AddConsoleExporter());
+    }
+
     public static void AddAzureKeyVault(
         this IServiceCollection services,
         IConfiguration configuration)
